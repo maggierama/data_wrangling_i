@@ -1,0 +1,94 @@
+---
+title: "Data Wringling I"
+author: Maggie Ramatowski
+date: 11/10/2026
+output: html_document
+---
+
+# Section 1: Loading Data
+
+```{r}
+library(tidyverse)
+```
+
+import csv file of rectangular data table using absolule path
+```{r loading dataset with absolute path}
+litters_df= read_csv(file= "C:/Users/mmr587/OneDrive - NYU Langone Health/OBGYN/P8105_R_Practice/data_wrangling_i/data/FAS_litters.csv")
+```
+Clean the variable names using janitor::clean_names()
+```{r snake text variable naming}
+names(litters_df)
+
+litters_df = janitor::clean_names(litters_df)
+
+names(litters_df)
+```
+Load the FAS_pups dataset using relative path:
+```{r loading dataset with relative path}
+pups_df= read_csv(file = "./data/FAS_pups.csv")
+```
+# Section 2: Looking at Data
+
+View the data after importing: view, str, head, and tail
+skimr::skim summarizes the dataset, means, standard deviation, min, max, missing
+
+```{r}
+skimr::skim(litters_df)
+
+```
+Address missing values:., NA, and blank cells will be treated as missing values. 
+```{r}
+litters_df= read_csv(
+  file = "./data/FAS_litters.csv", 
+  na= c(".", "NA", ""))
+)
+```
+
+Explicitly give column specifications of variable type:
+```{r}
+litters_df= 
+  read_csv(file= "./data/FAS_litters.csv",
+                     na= c(".", "NA", ""),
+                     col_types = cols(
+                       Group= col_character(),
+                       `Litter Number`= col_character(),
+                       `GD0 weight`= col_double(),
+                       `GD18 weight`= col_double(),
+                       `GD of Birth`= col_integer(),
+                       `Pups born alive`= col_integer(),
+                       `Pups dead @ birth`= col_integer(),
+                       `Pups survive`= col_integer()
+                     )
+           )
+```
+
+
+# Section 3: Pups Dataframe
+
+View Data
+```{r}
+skimr::skim(pups_df)
+```
+rename variables and address missingness
+```{r}
+pups_df= read_csv("./data/FAS_pups.csv",
+                  skip=3,
+                  na= c(".", "NA", "")
+                  )
+```
+
+categroizing variables:
+```{r}
+pups_df= 
+  read_csv(file= "./data/FAS_pups.csv", 
+           skip=3,
+           na= c(".", "NA", ""),
+                  col_types = cols(
+                    Sex= col_character(),
+                    `PD ears`= col_character(),
+                    `PD eyes`= col_character(),
+                    `PD pivot`= col_character(),
+                    `PD walk`= col_character()
+                  ))
+```
+
