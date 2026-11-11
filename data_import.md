@@ -38,6 +38,18 @@ library(tidyverse)
     ## ✖ dplyr::lag()    masks stats::lag()
     ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
+``` r
+library(readxl)
+```
+
+    ## Warning: package 'readxl' was built under R version 4.4.3
+
+``` r
+library(haven)
+```
+
+    ## Warning: package 'haven' was built under R version 4.4.3
+
 ## Read in some data
 
 Import litters csv file data set using relative path:
@@ -126,6 +138,74 @@ Data summary
 | pups_born_alive |         0 |             1 |  7.35 | 1.76 |   3 |   6 |   8 |   8 |   11 | ▁▃▂▇▁ |
 | pups_dead_birth |         0 |             1 |  0.33 | 0.75 |   0 |   0 |   0 |   0 |    4 | ▇▂▁▁▁ |
 | pups_survive    |         0 |             1 |  6.41 | 2.05 |   1 |   5 |   7 |   8 |    9 | ▁▃▂▇▇ |
+
+## Options to read_csv
+
+``` r
+litters_df= read_csv("./data/FAS_litters.csv")
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (4): Group, Litter Number, GD0 weight, GD18 weight
+    ## dbl (4): GD of Birth, Pups born alive, Pups dead @ birth, Pups survive
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+use skip= \# to skip the first however many rows use na= “.”, “NA”,
+“999” to identify missing values use col_names= FALSE to tell R that the
+first column is not name of variable
+
+## Other file formats
+
+Read in an excel file
+
+``` r
+mlb_df = read_excel("./data/mlb11.xlsx")
+mlb_df
+```
+
+    ## # A tibble: 30 × 12
+    ##    team        runs at_bats  hits homeruns bat_avg strikeouts stolen_bases  wins
+    ##    <chr>      <dbl>   <dbl> <dbl>    <dbl>   <dbl>      <dbl>        <dbl> <dbl>
+    ##  1 Texas Ran…   855    5659  1599      210   0.283        930          143    96
+    ##  2 Boston Re…   875    5710  1600      203   0.28        1108          102    90
+    ##  3 Detroit T…   787    5563  1540      169   0.277       1143           49    95
+    ##  4 Kansas Ci…   730    5672  1560      129   0.275       1006          153    71
+    ##  5 St. Louis…   762    5532  1513      162   0.273        978           57    90
+    ##  6 New York …   718    5600  1477      108   0.264       1085          130    77
+    ##  7 New York …   867    5518  1452      222   0.263       1138          147    97
+    ##  8 Milwaukee…   721    5447  1422      185   0.261       1083           94    96
+    ##  9 Colorado …   735    5544  1429      163   0.258       1201          118    73
+    ## 10 Houston A…   615    5598  1442       95   0.258       1164          118    56
+    ## # ℹ 20 more rows
+    ## # ℹ 3 more variables: new_onbase <dbl>, new_slug <dbl>, new_obs <dbl>
+
+Read in a SAS file
+
+``` r
+pulse_df = read_sas("./data/public_pulse_data.sas7bdat")
+pulse_df
+```
+
+    ## # A tibble: 1,087 × 7
+    ##       ID   age Sex    BDIScore_BL BDIScore_01m BDIScore_06m BDIScore_12m
+    ##    <dbl> <dbl> <chr>        <dbl>        <dbl>        <dbl>        <dbl>
+    ##  1 10003  48.0 male             7            1            2            0
+    ##  2 10015  72.5 male             6           NA           NA           NA
+    ##  3 10022  58.5 male            14            3            8           NA
+    ##  4 10026  72.7 male            20            6           18           16
+    ##  5 10035  60.4 male             4            0            1            2
+    ##  6 10050  84.7 male             2           10           12            8
+    ##  7 10078  31.3 male             4            0           NA           NA
+    ##  8 10088  56.9 male             5           NA            0            2
+    ##  9 10091  76.0 male             0            3            4            0
+    ## 10 10092  74.2 female          10            2           11            6
+    ## # ℹ 1,077 more rows
+
+## Additional Practice
 
 Load the FAS_pups data set using relative path and clean variable name:
 

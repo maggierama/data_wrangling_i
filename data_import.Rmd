@@ -7,6 +7,8 @@ output: github_document
 
 ```{r setup}
 library(tidyverse)
+library(readxl)
+library(haven)
 ```
 
 
@@ -32,8 +34,31 @@ Summarizes the data briefly
 ```{r}
 skimr::skim(litters_df)
 ```
+## Options to read_csv
+
+```{r}
+litters_df= read_csv("./data/FAS_litters.csv")
+
+```
+use skip= # to skip the first however many rows
+use na= ".", "NA", "999" to identify missing values
+use col_names= FALSE to tell R that the first column is not name of variable
+
+## Other file formats
+Read in an excel file 
+
+```{r}
+mlb_df = read_excel("./data/mlb11.xlsx")
+mlb_df
+```
+Read in a SAS file
+```{r}
+pulse_df = read_sas("./data/public_pulse_data.sas7bdat")
+pulse_df
+```
 
 
+## Additional Practice
 Load the FAS_pups data set using relative path and clean variable name:
 ```{r loading dataset with relative path}
 pups_df= read_csv(file = "./data/FAS_pups.csv")
