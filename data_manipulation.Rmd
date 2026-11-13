@@ -1,0 +1,48 @@
+---
+title: "data_manipulation"
+author: "Maggie Ramatowski"
+date: "2026-11-13"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+Print only 3 lines of each tibble:
+```{r}
+options(tibble.print_min = 3)
+```
+
+load data and clean data names
+
+```{r}
+litters_df = read_csv("./data/FAS_litters.csv", 
+                      na= c("NA", ".", ""))
+
+litters_df= janitor::clean_names(litters_df)
+
+pups_df= read_csv("./data/FAS_pups.csv", skip= 3, na= c("NA", "."))
+
+pups_df= janitor::clean_names(pups_df)
+```
+
+select only columns needed by naming them
+```{r}
+select(litters_df, group, litter_number, gd0_weight, pups_born_alive)
+```
+select only columns needed by range
+```{r}
+select(litters_df, group:gd_of_birth)
+```
+
+Specify columns to remove
+```{r}
+select(litters_df, -pups_survive)
+```
+
+Select litter number, sex, and PD ears from pups data set
+```{r}
+select(pups_df, litter_number, sex, pd_ears)
+```
+
