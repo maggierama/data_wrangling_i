@@ -46,3 +46,38 @@ Select litter number, sex, and PD ears from pups data set
 select(pups_df, litter_number, sex, pd_ears)
 ```
 
+Filter to include pups with sex 1
+```{r}
+filter(pups_df, sex==1)
+```
+
+filter for pups with sex 2 and walk less than 11
+```{r}
+filter(pups_df, pd_walk<11 & sex==2)
+```
+
+
+Create a new variable measuring distance between gd18_weight and gd0_weight, modify existing group variable
+
+```{r}
+mutate(litters_df, 
+       wt_gain= gd18_weight - gd0_weight,
+       group= str_to_lower(group))
+```
+
+Create variable that subtracts 7 from PD pivot, and a sum of all PD variables
+
+```{r}
+mutate(pups_df, 
+       pivot_minus7= pd_pivot -7, 
+       sum_pd= pd_ears + pd_eyes + pd_pivot + pd_walk)
+```
+
+```{r}
+pups_df_new = read_csv("./data/FAS_pups.csv", na = c("NA", "."), skip=3) |> 
+  janitor::clean_names() |> 
+  filter(sex == 1) |> 
+  select(-pd_ears) |> 
+  mutate(pd_pivot_gt7 = pd_pivot > 7)
+```
+

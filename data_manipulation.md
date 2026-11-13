@@ -115,3 +115,83 @@ select(pups_df, litter_number, sex, pd_ears)
     ## 2 #85               1       4
     ## 3 #1/2/95/2         1       5
     ## # ℹ 310 more rows
+
+Filter to include pups with sex 1
+
+``` r
+filter(pups_df, sex==1)
+```
+
+    ## # A tibble: 155 × 6
+    ##   litter_number   sex pd_ears pd_eyes pd_pivot pd_walk
+    ##   <chr>         <dbl>   <dbl>   <dbl>    <dbl>   <dbl>
+    ## 1 #85               1       4      13        7      11
+    ## 2 #85               1       4      13        7      12
+    ## 3 #1/2/95/2         1       5      13        7       9
+    ## # ℹ 152 more rows
+
+filter for pups with sex 2 and walk less than 11
+
+``` r
+filter(pups_df, pd_walk<11 & sex==2)
+```
+
+    ## # A tibble: 127 × 6
+    ##   litter_number   sex pd_ears pd_eyes pd_pivot pd_walk
+    ##   <chr>         <dbl>   <dbl>   <dbl>    <dbl>   <dbl>
+    ## 1 #1/2/95/2         2       4      13        7       9
+    ## 2 #1/2/95/2         2       4      13        7      10
+    ## 3 #1/2/95/2         2       5      13        8      10
+    ## # ℹ 124 more rows
+
+Create a new variable measuring distance between gd18_weight and
+gd0_weight, modify existing group variable
+
+``` r
+mutate(litters_df, 
+       wt_gain= gd18_weight - gd0_weight,
+       group= str_to_lower(group))
+```
+
+    ## # A tibble: 49 × 9
+    ##   group litter_number gd0_weight gd18_weight gd_of_birth pups_born_alive
+    ##   <chr> <chr>              <dbl>       <dbl>       <dbl>           <dbl>
+    ## 1 con7  #85                 19.7        34.7          20               3
+    ## 2 con7  #1/2/95/2           27          42            19               8
+    ## 3 con7  #5/5/3/83/3-3       26          41.4          19               6
+    ## # ℹ 46 more rows
+    ## # ℹ 3 more variables: pups_dead_birth <dbl>, pups_survive <dbl>, wt_gain <dbl>
+
+Create variable that subtracts 7 from PD pivot, and a sum of all PD
+variables
+
+``` r
+mutate(pups_df, 
+       pivot_minus7= pd_pivot -7, 
+       sum_pd= pd_ears + pd_eyes + pd_pivot + pd_walk)
+```
+
+    ## # A tibble: 313 × 8
+    ##   litter_number   sex pd_ears pd_eyes pd_pivot pd_walk pivot_minus7 sum_pd
+    ##   <chr>         <dbl>   <dbl>   <dbl>    <dbl>   <dbl>        <dbl>  <dbl>
+    ## 1 #85               1       4      13        7      11            0     35
+    ## 2 #85               1       4      13        7      12            0     36
+    ## 3 #1/2/95/2         1       5      13        7       9            0     34
+    ## # ℹ 310 more rows
+
+``` r
+pups_df_new = read_csv("./data/FAS_pups.csv", na = c("NA", "."), skip=3) |> 
+  janitor::clean_names() |> 
+  filter(sex == 1) |> 
+  select(-pd_ears) |> 
+  mutate(pd_pivot_gt7 = pd_pivot > 7)
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
