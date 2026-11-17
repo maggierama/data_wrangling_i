@@ -230,3 +230,134 @@ lotr_tidy
     ## 16 return_king     hobbit male    2673
     ## 17 return_king     man    female   268
     ## 18 return_king     man    male    2459
+
+# Joining Datasets
+
+load and clean pups and litters datasets
+
+``` r
+pup_df= read_csv("./data/FAS_pups.csv", skip= 3, na=c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  mutate(
+    sex= recode_values(sex, 
+                       1~ "male",
+                       2~ "female"),
+    sex= as.factor(sex))
+```
+
+    ## Rows: 313 Columns: 6
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (1): Litter Number
+    ## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+litters_df= read.csv("./data/FAS_litters.csv", na= c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  separate(group, into = c("dose", "day_of_tx"), sep= 3) |> 
+  relocate(litter_number) |> 
+  mutate(
+    wt_gain= gd18_weight - gd0_weight, 
+    dose= str_to_lower(dose))
+```
+
+join data sets
+
+``` r
+fas_df= left_join(pup_df, litters_df, by= "litter_number")
+
+fas_df
+```
+
+    ## # A tibble: 313 × 15
+    ##   litter_number sex   pd_ears pd_eyes pd_pivot pd_walk dose  day_of_tx
+    ##   <chr>         <fct>   <dbl>   <dbl>    <dbl>   <dbl> <chr> <chr>    
+    ## 1 #85           male        4      13        7      11 con   7        
+    ## 2 #85           male        4      13        7      12 con   7        
+    ## 3 #1/2/95/2     male        5      13        7       9 con   7        
+    ## 4 #1/2/95/2     male        5      13        8      10 con   7        
+    ## 5 #5/5/3/83/3-3 male        5      13        8      10 con   7        
+    ## # ℹ 308 more rows
+    ## # ℹ 7 more variables: gd0_weight <dbl>, gd18_weight <dbl>, gd_of_birth <int>,
+    ## #   pups_born_alive <int>, pups_dead_birth <int>, pups_survive <int>,
+    ## #   wt_gain <dbl>
+
+## Practice
+
+load and clean data sets
+
+``` r
+survey_os= read_csv("./data/surv_os.csv", na= c("", "NA", ".")) |> 
+  janitor::clean_names() |> 
+  rename(
+    id= what_is_your_uni, os= what_operating_system_do_you_use)
+```
+
+    ## Rows: 173 Columns: 2
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): What is your UNI?, What operating system do you use?
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+survey_git= read_csv("./data/surv_program_git.csv", na=c("", "NA", ".")) |> 
+  janitor::clean_names() |> 
+  rename(
+    id= what_is_your_uni,
+    degree= what_is_your_degree_program,
+    git= which_most_accurately_describes_your_experience_with_git
+  )
+```
+
+    ## Rows: 135 Columns: 3
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (3): What is your UNI?, What is your degree program?, Which most accurat...
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+combine datasets: gives error that matching variable is not unique
+
+``` r
+survey_all= left_join(survey_os, survey_git, by= "id")
+```
+
+    ## Warning in left_join(survey_os, survey_git, by = "id"): Detected an unexpected many-to-many relationship between `x` and `y`.
+    ## ℹ Row 7 of `x` matches multiple rows in `y`.
+    ## ℹ Row 66 of `y` matches multiple rows in `x`.
+    ## ℹ If a many-to-many relationship is expected, set `relationship =
+    ##   "many-to-many"` to silence this warning.
+
+use below code to investigate the error:
+
+``` r
+survey_os |> slice(7)
+```
+
+    ## # A tibble: 1 × 2
+    ##   id         os        
+    ##   <chr>      <chr>     
+    ## 1 student_15 Windows 10
+
+``` r
+survey_git |> filter(id=="student 15")
+```
+
+    ## # A tibble: 0 × 3
+    ## # ℹ 3 variables: id <chr>, degree <chr>, git <chr>
+
+``` r
+survey_all= left_join(survey_os, survey_git, by= "id")
+```
+
+    ## Warning in left_join(survey_os, survey_git, by = "id"): Detected an unexpected many-to-many relationship between `x` and `y`.
+    ## ℹ Row 7 of `x` matches multiple rows in `y`.
+    ## ℹ Row 66 of `y` matches multiple rows in `x`.
+    ## ℹ If a many-to-many relationship is expected, set `relationship =
+    ##   "many-to-many"` to silence this warning.

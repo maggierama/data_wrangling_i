@@ -121,3 +121,64 @@ lotr_tidy= bind_rows(fellowship_ring, two_towers, return_king) |>
 lotr_tidy
 ```
 
+# Joining Datasets
+
+load and clean pups and litters datasets
+```{r}
+pup_df= read_csv("./data/FAS_pups.csv", skip= 3, na=c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  mutate(
+    sex= recode_values(sex, 
+                       1~ "male",
+                       2~ "female"),
+    sex= as.factor(sex))
+
+
+litters_df= read.csv("./data/FAS_litters.csv", na= c("NA", "", ".")) |> 
+  janitor::clean_names() |> 
+  separate(group, into = c("dose", "day_of_tx"), sep= 3) |> 
+  relocate(litter_number) |> 
+  mutate(
+    wt_gain= gd18_weight - gd0_weight, 
+    dose= str_to_lower(dose))
+```
+join data sets
+```{r}
+
+fas_df= left_join(pup_df, litters_df, by= "litter_number")
+
+fas_df
+```
+
+
+## Practice
+
+load and clean data sets
+```{r}
+survey_os= read_csv("./data/surv_os.csv", na= c("", "NA", ".")) |> 
+  janitor::clean_names() |> 
+  rename(
+    id= what_is_your_uni, os= what_operating_system_do_you_use)
+
+survey_git= read_csv("./data/surv_program_git.csv", na=c("", "NA", ".")) |> 
+  janitor::clean_names() |> 
+  rename(
+    id= what_is_your_uni,
+    degree= what_is_your_degree_program,
+    git= which_most_accurately_describes_your_experience_with_git
+  )
+```
+combine datasets: gives error that matching variable is not unique
+```{r}
+survey_all= left_join(survey_os, survey_git, by= "id")
+```
+use below code to investigate the error:
+```{r}
+survey_os |> slice(7)
+
+survey_git |> filter(id=="student 15")
+```
+```{r}
+survey_all= left_join(survey_os, survey_git, by= "id")
+```
+
