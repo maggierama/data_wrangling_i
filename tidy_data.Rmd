@@ -23,6 +23,7 @@ pulse_df =
 pulse_df
 ```
 
+# 'Pivot_longer'
 ```{r}
 pulse_tidy_df= 
   pivot_longer(
@@ -49,4 +50,46 @@ pulse_tidy_df
 ```{r}
 mutate(pulse_tidy_df, visit= replace(visit, visit== "bl", "00m"), visit= factor(visit))
 ```
+
+
+## Practice
+
+load litters data set and clean variable names
+```{r}
+litters_df= read_csv("./data/FAS_litters.csv") |> 
+  janitor::clean_names()
+```
+
+retain only litter number and weights in dataset
+```{r}
+select(litters_df, litter_number, gd0_weight,gd18_weight) |> 
+  pivot_longer(gd0_weight:gd18_weight, 
+               names_to = "gd",
+               values_to = "weight") |> 
+  mutate(
+    gd= recode_values(gd, 
+                "gd0_weight" ~ 0,
+                "gd18_weight" ~ 18))
+  
+```
+
+# 'Pivot_wider'
+create a sample dataset
+```{r}
+analysis_result= 
+  tibble(
+    group= c("treatment", "treatment", "placebo", "placebo"),
+    time= c("pre", "post", "pre", "post"),
+    mean= c(4, 8, 3.5, 4)
+  )
+
+analysis_result
+```
+```{r}
+pivot_wider(analysis_result, 
+            names_from = "time", 
+            values_from = "mean") |> 
+  knitr::kable()
+```
+
 

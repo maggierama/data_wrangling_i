@@ -44,6 +44,8 @@ pulse_df
     ## 5 10035  60.4 male             4             0             1             2
     ## # ℹ 1,082 more rows
 
+# ‘Pivot_longer’
+
 ``` r
 pulse_tidy_df= 
   pivot_longer(
@@ -100,3 +102,79 @@ mutate(pulse_tidy_df, visit= replace(visit, visit== "bl", "00m"), visit= factor(
     ## 4 10003  48.0 male  12m       0
     ## 5 10015  72.5 male  00m       6
     ## # ℹ 4,343 more rows
+
+## Practice
+
+load litters data set and clean variable names
+
+``` r
+litters_df= read_csv("./data/FAS_litters.csv") |> 
+  janitor::clean_names()
+```
+
+    ## Rows: 49 Columns: 8
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (4): Group, Litter Number, GD0 weight, GD18 weight
+    ## dbl (4): GD of Birth, Pups born alive, Pups dead @ birth, Pups survive
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+retain only litter number and weights in dataset
+
+``` r
+select(litters_df, litter_number, gd0_weight,gd18_weight) |> 
+  pivot_longer(gd0_weight:gd18_weight, 
+               names_to = "gd",
+               values_to = "weight") |> 
+  mutate(
+    gd= recode_values(gd, 
+                "gd0_weight" ~ 0,
+                "gd18_weight" ~ 18))
+```
+
+    ## # A tibble: 98 × 3
+    ##   litter_number    gd weight
+    ##   <chr>         <dbl> <chr> 
+    ## 1 #85               0 19.7  
+    ## 2 #85              18 34.7  
+    ## 3 #1/2/95/2         0 27    
+    ## 4 #1/2/95/2        18 42    
+    ## 5 #5/5/3/83/3-3     0 26    
+    ## # ℹ 93 more rows
+
+# ‘Pivot_wider’
+
+create a sample dataset
+
+``` r
+analysis_result= 
+  tibble(
+    group= c("treatment", "treatment", "placebo", "placebo"),
+    time= c("pre", "post", "pre", "post"),
+    mean= c(4, 8, 3.5, 4)
+  )
+
+analysis_result
+```
+
+    ## # A tibble: 4 × 3
+    ##   group     time   mean
+    ##   <chr>     <chr> <dbl>
+    ## 1 treatment pre     4  
+    ## 2 treatment post    8  
+    ## 3 placebo   pre     3.5
+    ## 4 placebo   post    4
+
+``` r
+pivot_wider(analysis_result, 
+            names_from = "time", 
+            values_from = "mean") |> 
+  knitr::kable()
+```
+
+| group     | pre | post |
+|:----------|----:|-----:|
+| treatment | 4.0 |    8 |
+| placebo   | 3.5 |    4 |
