@@ -1,0 +1,33 @@
+Tidy Data and Relational Datasets
+================
+Maggie Ramatowski
+2026-11-17
+
+``` r
+library(tidyverse)
+```
+
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.2.1     ✔ readr     2.2.0
+    ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
+    ## ✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+    ## ✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+    ## ✔ purrr     1.2.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+Print only 5 lines of each tibble:
+
+``` r
+options(tibble.print_min = 5)
+```
+
+load dataset and clean variable names
+
+``` r
+pulse_df = 
+  haven::read_sas("./data/public_pulse_data.sas7bdat") |> 
+  janitor::clean_names()
+```

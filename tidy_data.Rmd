@@ -1,0 +1,23 @@
+---
+title: "Tidy Data and Relational Datasets"
+author: "Maggie Ramatowski"
+date: "2026-11-17"
+output: github_document
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+Print only 5 lines of each tibble:
+```{r}
+options(tibble.print_min = 5)
+```
+
+load dataset and clean variable names
+```{r}
+pulse_df = 
+  haven::read_sas("./data/public_pulse_data.sas7bdat") |> 
+  janitor::clean_names()
+```
+
